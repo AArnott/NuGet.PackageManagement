@@ -44,8 +44,11 @@ namespace StandaloneUI
             _container = Initialize();
 
             this.Title = "NuGet Standalone UI";
-            Height = 800;
-            Width = 1000;
+
+            foreach (var dte in DTEHelper.GetDTE())
+            {
+
+            }
 
             var repositoryProvider = new SourceRepositoryProvider(_resourceProviders, _settings);
 
@@ -56,8 +59,6 @@ namespace StandaloneUI
             NuGetProject project = new PackagesConfigNuGetProject(@"C:\Users\juste\Documents\Visual Studio 2013\Projects\ConsoleApplication2\ConsoleApplication2\packages.config", projectMetadata);
             var projects = new NuGetProject[] { project };
 
-            //var uiContext = _contextFactory.Create(projects);
-
             _contextFactory = new NuGetUIContextFactory(repositoryProvider);
             var context = _contextFactory.Create(projects);
             var uiController = _uiServiceFactory.Create(projects);
@@ -66,7 +67,7 @@ namespace StandaloneUI
 
             PackageManagerControl control = new PackageManagerControl(model);
 
-            layoutGrid.Children.Add(control);
+            NuGetWindow.Child = control;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
