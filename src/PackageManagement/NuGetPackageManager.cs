@@ -554,7 +554,7 @@ namespace NuGet.PackageManagement
             ResolutionContext resolutionContext, INuGetProjectContext nuGetProjectContext,
             SourceRepository primarySourceRepository, IEnumerable<SourceRepository> secondarySources, CancellationToken token)
         {
-            if (nuGetProject is ProjectManagement.Projects.ProjectKNuGetProjectBase)
+            if (nuGetProject is ProjectManagement.Projects.NuGetAwareProjectBase)
             {
                 var action = NuGetProjectAction.CreateInstallProjectAction(packageIdentity, primarySourceRepository);
                 return new NuGetProjectAction[] { action };
@@ -611,9 +611,9 @@ namespace NuGet.PackageManagement
             }
 
             // TODO: BUGBUG: HACK: Multiple primary repositories is mainly intended for nuget.exe at the moment
-            // The following special case for ProjectK is not correct, if they used nuget.exe
+            // The following special case for INuGetPackageManager proffering projects is not correct, if they used nuget.exe
             // and multiple repositories in the -Source switch
-            if (nuGetProject is ProjectManagement.Projects.ProjectKNuGetProjectBase)
+            if (nuGetProject is ProjectManagement.Projects.NuGetAwareProjectBase)
             {
                 var action = NuGetProjectAction.CreateInstallProjectAction(packageIdentity, primarySources.First());
                 return new NuGetProjectAction[] { action };
@@ -935,7 +935,7 @@ namespace NuGet.PackageManagement
                 throw new InvalidOperationException(Strings.SolutionManagerNotAvailableForUninstall);
             }
 
-            if (nuGetProject is ProjectManagement.Projects.ProjectKNuGetProjectBase)
+            if (nuGetProject is ProjectManagement.Projects.NuGetAwareProjectBase)
             {
                 var action = NuGetProjectAction.CreateUninstallProjectAction(packageReference.PackageIdentity);
                 return new NuGetProjectAction[] { action };
@@ -1173,7 +1173,7 @@ namespace NuGet.PackageManagement
             await nuGetProject.UninstallPackageAsync(packageIdentity, nuGetProjectContext, token);
 
             // Step-2: Check if the package directory could be deleted
-            if (!(nuGetProject is ProjectManagement.Projects.ProjectKNuGetProjectBase) &&
+            if (!(nuGetProject is ProjectManagement.Projects.NuGetAwareProjectBase) &&
                 !await PackageExistsInAnotherNuGetProject(nuGetProject, packageIdentity, SolutionManager, token))
             {
                 packageWithDirectoriesToBeDeleted.Add(packageIdentity);

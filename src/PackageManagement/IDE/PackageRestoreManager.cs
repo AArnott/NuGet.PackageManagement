@@ -156,8 +156,8 @@ namespace NuGet.PackageManagement
             var packageReferencesDict = new Dictionary<PackageReference, HashSet<string>>(new PackageReferenceComparer());
             foreach (var nuGetProject in SolutionManager.GetNuGetProjects())
             {
-                // skip project k projects
-                if (nuGetProject is ProjectManagement.Projects.ProjectKNuGetProjectBase)
+                // skip projects that offer an INuGetPackageManager of their own.
+                if (nuGetProject is ProjectManagement.Projects.NuGetAwareProjectBase)
                 {
                     continue;
                 }
